@@ -1,6 +1,13 @@
 export function trackUserVisibility(): void {
+  handleVisibilityChange();
+
   if (document.addEventListener)
     document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  window.onbeforeunload = function (event) {
+    if (event)
+      localStorage.setItem("lastWindowVisibleTimestamp", String(Date.now()));
+  };
 }
 
 function handleVisibilityChange(): void {
@@ -13,7 +20,7 @@ function handleVisibilityChange(): void {
       Number(localStorage.getItem("lastWindowVisibleTimestamp"))
     ).getTime();
     const fiftyHoursAfterTimestamp: number =
-      lastWindowVisibleTimestamp + 2 * 60 * 1000;
+      lastWindowVisibleTimestamp + 1 * 60 * 1000;
 
     if (Date.now() >= fiftyHoursAfterTimestamp) {
       alert("você passou muito tempo inativo!");
